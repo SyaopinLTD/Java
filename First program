@@ -1,0 +1,25 @@
+
+public class MyFisrtClass {
+
+	public static void main(String[] args) {
+	System.out.println("My first program!");
+	int a, b;
+	a = 4;
+	b = 1;
+	System.out.println("===========================");
+	if ( a < b ){
+		System.out.println("Minimum number: " + a);
+	}
+	else{
+		System.out.println("Minimum number: " + b);
+	}
+    if ((a * b) > (a + b)){
+    	System.out.println("Multiplication is bigger: " + a*b);
+    }
+    else{
+    	System.out.println("Addition is bigger: " + (a+b));
+    }
+	}
+
+}
+=================================================================
