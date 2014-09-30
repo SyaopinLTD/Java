@@ -1,0 +1,45 @@
+
+public class HomeWork2 {
+
+	public static void main(String[] args) {
+		System.out.println("======= Home Work 2 ========");
+///////////First task/////////////////		
+		System.out.println("Task I");
+		int x = 5;
+		String str = "";
+		for (int j = 1;j <= x; j ++){
+			
+		   for (int i = 1; i <= x - j; i ++){
+			str += ".";
+		    } 
+        System.out.println(str+j);
+        str = "";
+		}
+/////////////Second task//////////
+		
+		System.out.println("Task II");
+		int sum = 0, a1 = 5, d = 3;
+		for (int i = 0; i < 10; i ++){
+			sum += a1 + d * i;
+		}
+		System.out.println(" Answer is: " + sum);
+		
+///////////Third task///////////////
+		System.out.println("Task III");
+		int N = 20, sum1 = 0, num = 0;
+		double res;
+		for (int i = 1; i <= N; i ++){
+			if (( i % 3) == 0){
+				sum1 += i;
+				num ++;
+			}
+		}
+		if ( num != 0){		
+		res = (double) sum1 / num;
+		System.out.println("Answer is: " + res);
+		}
+		else {
+			System.out.println("No such numbers!");
+		}
+		
+	}
