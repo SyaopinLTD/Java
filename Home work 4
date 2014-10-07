@@ -1,0 +1,36 @@
+
+import java.util.Random;
+
+
+public class Homework4 {
+
+	public static void main(String[] args) {
+	////////First task////////
+		System.out.println("=========1. Task ===========");
+		double x1 = 1, x2 = 1, a = 3, p = 2, eps = 0.01;
+		x2 = a / 2;
+		do {
+			x1 = x2;
+			x2 = 1/p * ((p - 1) * x1 + a / Math.pow(x1, p - 1));
+		}
+		while(Math.abs(x1 - x2) >= eps);
+      System.out.println("Root of the number "+a+" in power of "+p+" equals: "+x2);
+      System.out.println("Checking answer with Math.pow:"+Math.pow(a, 1/p));
+     ////////Second task/////////
+      System.out.println("=========2. Task ===========");
+      int n = 10, m = 20, num, count = 0, sum = 0;
+      Random rand = new Random();
+      for (int i = 1; i <= n; i ++)
+      {
+    	  count ++;
+    	  num = rand.nextInt(m); 
+    	  sum += num;
+    	  System.out.println("Random number: "+num+" arithmetic mean: "+ (double) sum/count);
+    	  
+      }
+    //////Third task/////////
+      System.out.println("=========3. Task ===========");
+      
+	}
+
+}
