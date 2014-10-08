@@ -1,4 +1,3 @@
-
 import java.util.Random;
 
 
@@ -30,7 +29,49 @@ public class Homework4 {
       }
     //////Third task/////////
       System.out.println("=========3. Task ===========");
-      
+      double a1, b1, c1, cos;
+      a1 = 2;
+      b1 = 2;
+      c1 = 2;
+      cos = (b1*b1 + c1*c1 - a1*a1)/(2*b1*c1);
+      System.out.println(cos);
+      if (cos > 0)
+      {
+    	  System.out.println("This trianle is obtuse-angled.");
+      }
+      else if (cos < 0){
+    	  System.out.println("This trianle is acute-angled.");
+      }
+      else {
+    	  System.out.println("This trianle is rectngular.");
+      }
+    ///////Fourth task//////////
+      System.out.println("=========4. Task ===========");
+      double s = 1.0, z = 2.0, k = 2.0; // daily ration 
+      double restOfS = 40, restOfZ = 55, restOfK = 68; // feed resources
+      double lossS = 5, lossZ = 10, lossK = 8; //losses of resources
+      double g = 10, pcow = 10; // quantity of cows, pcow - loss of cows 
+      int days = 0;
+      System.out.println("Cows: "+g+" Feed resources: restOfS "+restOfS+" restOfZ: "+restOfZ+" restOfK:"+restOfK);
+      while ((restOfS>0)&&(restOfZ>0)&&(restOfK>0))
+      {    	  
+        restOfS -= s*g - (lossS*restOfS)/100;
+        restOfZ -= z*g - (lossZ*restOfZ)/100;
+        restOfK -= k*g - (lossK*restOfK)/100;
+        g -= (pcow*g)/100;
+        
+        days ++;
+        System.out.println("day: "+days+" Cows: "+g+" "+restOfS+" "+restOfZ+" "+restOfK);
+      }
+      if (restOfS<0){
+        System.out.println("After "+(days-1)+" days cannot feed cows anymore, restOfS is out of stock");
+      }
+      else if(restOfZ<0){
+    	  System.out.println("After "+(days-1)+" days cannot feed cows anymore, restOfZ is out of stock"); 
+      }
+      else {
+    	  System.out.println("After "+(days-1)+" days cannot feed cows anymore, restOfK is out of stock"); 
+      }
 	}
 
 }
