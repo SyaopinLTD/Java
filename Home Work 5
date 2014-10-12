@@ -1,0 +1,74 @@
+import java.util.Random;
+
+
+public class HomeWork5 {
+
+	public static void main(String[] args) {
+		System.out.println("=================Home Work 5=================");
+		System.out.println("=====1. Task=================");
+	Random rand = new Random();
+	int code = 0, tmp = 0;
+	for (int i=1; i<=5; i++){
+		code = rand.nextInt(0x5F)+0x20;
+		System.out.println("Code "+code+" is: "+(char)code);
+
+		if (!Character.isLetterOrDigit(code)){
+			tmp = 1; //code is symbol
+		}
+		else if (Character.isDigit(code)){
+			tmp = 2; //code is digit
+		}
+		else if (Character.isLowerCase(code)) {
+			tmp = 3; //code is lowercase
+		}
+		else {
+			tmp = 4; //code is uppercase
+		}
+		switch(tmp){
+		case 1: System.out.println("This is a symbol"); break;
+		case 2: System.out.println("This is a digit"); break;
+		case 3: System.out.println("This is a lowercase letter"); break;
+		case 4: System.out.println("This is an uppercase letter"); break;
+		default:break;
+		}	
+	}
+	
+	System.out.println("=====2. Task=================");
+	int sum = 0, dgt;
+	Random rand1 = new Random();
+	while (true){
+		dgt = rand1.nextInt(0x5F)+0x20;
+		if (Character.isDigit(dgt)){
+			sum += Character.getNumericValue(dgt);
+			System.out.println("Digit: "+Character.getNumericValue(dgt)+" Sum: "+sum);
+		}
+		if (sum>10){
+			break;
+		}
+	}
+	System.out.println("=====3. Task=================");
+	String str = "Hello", answer;
+	boolean check = true;
+	for (int i=0; i<str.length(); i++){
+		if (Character.isAlphabetic(str.charAt(i))){
+			continue;
+		}
+		check = false; 
+		break;
+	}
+	answer = check?"String \""+str+"\" contains only letters":"There are not only letters in string \""+str+"\"";
+	System.out.print(answer);
+	System.out.println("\n=====4. Task=================");
+	String binStr = "10010101";
+	int num = 0;
+	for (int i = 0; i<binStr.length(); i++){
+		if (binStr.charAt(binStr.length()-1-i) == '1'){
+			num += Math.pow(2, i);
+		}
+	}	
+	System.out.println("Binary string "+binStr+" equals decimal: "+num);
+	System.out.println("Checking with Integer.toBinaryString: "+Integer.toBinaryString(num));
+
+	}
+
+}
