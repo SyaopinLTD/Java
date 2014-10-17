@@ -1,0 +1,112 @@
+import java.util.Arrays;
+import java.util.Random;
+
+
+public class HomeWork7 {
+
+	public static void main(String[] args) {
+		System.out.println("=======================Task 1 =========================");
+	       int [] ar3 = {4, 64, 10, 30, 5, 20, 3, 11, 7, 9};
+	       int imax = 0, imin = 0;
+	       for (int i = 0; i < ar3.length; i++){
+	    	   if (ar3[i] > ar3[imax]) {
+	    		   imax = i;
+	    	   } 
+	    	   if (ar3[i] < ar3[imin]){
+	    		   imin = i;
+	    	   }
+	       }
+	       System.out.println("First array: "+Arrays.toString(ar3));
+	       System.out.println("Max: "+ar3[imax]+"\nmax index: "+imax+"\nmin: "+ar3[imin]+"\nmin index: "+imin);
+	       int [] ar4;
+	       int [] ar5 = new int [ar3.length - 2];
+	       if (imax > imin){
+	    	   
+	    	   ar4 = Arrays.copyOfRange(ar3, imin, imax+1);  
+	       }
+	       else {
+	    	   ar4 = Arrays.copyOfRange(ar3, imax, imin+1); 
+	       }
+	       System.out.println("Result array: "+Arrays.toString(ar4));
+	       /*ar4 = Arrays.copyOf(ar4, ar4.length*2);
+	       System.out.println("Result array: "+Arrays.toString(ar4));*/
+	       
+	       if (imax < imin){
+	    	   int tmp = imin;
+	    	   imin = imax;
+	    	   imax = tmp;
+	       }
+	    	   System.arraycopy(ar3, 0, ar5, 0, imin);
+	    	   System.arraycopy(ar3, imin+1, ar5, imin, imax-imin-1);
+	    	   System.arraycopy(ar3, imax+1, ar5, imax-1, ar3.length-imax-1);
+
+	       System.out.println("Result new array without min and max: "+Arrays.toString(ar5)); 
+	  System.out.println("=======================Task 2 =========================");
+	  int [] ar1 = {0, 1, -3, 0, 5, -7, 10, 2, 1, -5, 0};
+	  int [] neg = new int [ar1.length];
+	  int [] pos = new int [ar1.length];
+	  int count = 1, ineg = 0, ipos = 0, xneg = 0, xzero = 0;
+	  while(count <= 2){                // делаем два прохода по массиву - в первый ищем положительные
+		                                //и отрицательные, во второй - нули
+		  for (int i = 0; i < ar1.length; i ++){
+			 switch(count){
+			 case 1: 
+				 if (ar1[i]>0){
+					 pos[ipos] = ar1[i];
+					 ipos ++;
+				 }
+				 else if (ar1[i]<0){
+					 neg[ineg] = ar1[i];
+					 ineg ++;
+				 }
+				 xneg = ineg;
+				 break;
+			 case 2:
+				 if (ar1[i]==0){
+					 neg[ineg] = ar1[i];
+					 ineg ++;
+				 }
+				 break;
+			 } 
+		  }
+		  count ++;
+	  }
+	  System.out.println("Initial array: "+Arrays.toString(ar1));
+	  System.out.println("+: "+ipos+"\n-: "+xneg+"\n0: "+(ineg - xneg));
+	  System.arraycopy(neg, 0, ar1, 0, ineg);
+	  System.arraycopy(pos, 0, ar1, ineg, ipos);
+	  System.out.println("Resulting arrray: "+Arrays.toString(ar1));
+	  
+	  System.out.println("=======================Task 3 =========================");
+	  int [] ar2 = new int [10];
+	  String [] ar6 = new String [10];
+	  Random rand = new Random();
+	  System.out.println("__DEC__|__HEX__");
+	  for (int i= 0; i<ar2.length; i++){
+		  ar2[i] = rand.nextInt(20);
+		  ar6[i] = Integer.toHexString(ar2[i]);
+		  System.out.printf("% -6d"+" | "+"0x%-6s\n",ar2[i],ar6[i]);  
+	  }
+	  /*System.out.println("Initial array: "+Arrays.toString(ar2));
+	  System.out.println("Initial array: "+Arrays.toString(ar6));*/
+	  System.out.println("=======================Task 4 =========================");
+	  String [] ar7 = {"qwe","mkfdkf","opoPOPoep","iui543","ioio"};
+	  int max = ar7[0].length();
+	  String strMax;
+	  for (String i: ar7){      //searching for maximum length string
+		  if (i.length() > max){
+			  max = i.length();
+			  strMax = i;
+		  }
+	  }
+	  char [] tmp = new char [max];  
+	  for (String i: ar7){         //searching for string containing only letters 
+		 tmp = i.toCharArray();
+		 System.out.println(Arrays.toString(tmp));
+		 for (char j: tmp){
+			 
+		 }
+	  }	  
+	}
+
+}
