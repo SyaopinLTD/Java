@@ -90,23 +90,114 @@ public class HomeWork7 {
 	  /*System.out.println("Initial array: "+Arrays.toString(ar2));
 	  System.out.println("Initial array: "+Arrays.toString(ar6));*/
 	  System.out.println("=======================Task 4 =========================");
-	  String [] ar7 = {"qwe","mkfdkf","opoPOPoep","iui543","ioio"};
+	  String [] ar7 = {"qwe","mkfdkf","3yty8","opoPOPoep","_ywuer","iui543","ioio"};
+	  System.out.println("Initial array: "+Arrays.toString(ar7));
 	  int max = ar7[0].length();
-	  String strMax;
+	  String strMax = "";
 	  for (String i: ar7){      //searching for maximum length string
 		  if (i.length() > max){
 			  max = i.length();
 			  strMax = i;
 		  }
 	  }
+	  System.out.println("String with maximum length: "+strMax);
 	  char [] tmp = new char [max];  
+	  System.out.println("Strings only with letters:");
 	  for (String i: ar7){         //searching for string containing only letters 
 		 tmp = i.toCharArray();
-		 System.out.println(Arrays.toString(tmp));
-		 for (char j: tmp){
-			 
+		 boolean flag = true;
+		 for (char j: tmp){ 
+			 if (!Character.isAlphabetic(j)){
+				 flag = false;
+				 break;
+			 }
 		 }
-	  }	  
+		 if (flag){
+			 System.out.println(Arrays.toString(tmp));
+		 }
+	  }
+	  System.out.println("=======================Task 5 =========================");
+	  char [] ar8 = {'e', 't', 'a', 'y', 'T', 'a', 'a', 'i'};
+	  int a = 0;
+	  for (int i = 0; i<ar8.length; i++){
+		  if (ar8[i]=='a'){
+			  a ++;
+		  }
+	  }
+	  char [] newar8 = new char [ar8.length + a*2];
+	  char [] tmp2 = {'!', '='};
+	  int j = 0;
+	  for (int i = 0; i<ar8.length; i++){
+		  if (ar8[i]!='a'){
+		    newar8[j] = ar8[i];
+		    j ++;
+		  }
+		  else {
+			  newar8[j] = ar8[i];
+			  System.arraycopy(tmp2, 0, newar8, j+1, 2);
+			  j +=3;
+		  }
+	  } 
+	  System.out.println("Initial array: "+Arrays.toString(ar8));
+	  System.out.println("Result array: "+Arrays.toString(newar8));
+	  System.out.println("=======================Task 6 =========================");
+	  int [] ar9 = {2, 4, 43, -67, 122, 78, -6, 45, 7, 323, 5, 11};
+	  int maxlen = 0;
+	  for (int i: ar9){
+		  if (Integer.toString(i).length()>maxlen){
+			  maxlen = Integer.toString(i).length();
+		  }
+	  }
+	  int maxa = 0 , maxb = 0;
+	  for  (int i=0; i < ar9.length; i++){
+		  if((Integer.toString(ar9[i]).length() == maxlen)&&(maxa == 0)){
+			  maxa = i;
+		  }
+		  else if ((Integer.toString(ar9[i]).length() == maxlen)&&(maxa!=0)){
+			  maxb = i;
+		  }
+		  if ((maxa!=0)&&(maxb!=0)){
+			  break;
+		  }
+	  }
+	  System.out.println("Initial array: "+Arrays.toString(ar9));
+	  System.out.println(maxb);
+	  int A [] = new int [ar9.length-2];
+	  int B [] = new int [maxb - maxa + 1];
+	  System.arraycopy(ar9, 0, A, 0, maxa);
+	  System.arraycopy(ar9, maxb+1, A, maxa, ar9.length-maxb-1);
+	  System.arraycopy(ar9, maxa, B, 0, maxb-maxa+1);
+	  System.out.println("Initial array: "+Arrays.toString(ar9));
+	  System.out.println("Result array A: "+Arrays.toString(A));
+	  System.out.println("Result array B: "+Arrays.toString(B));
+	  System.out.println("=======================Task 7 =========================");
+	  int [] ar10 = new int [20];
+	  Random rand1 = new Random();
+	  for (int i = 0; i < ar10.length; i ++){
+		  ar10[i] = rand.nextInt(6);
+	  }
+	  int [] tmpAr = new int [6];
+	  for (int el: ar10){
+		  for (int i = 0; i< 6; i ++){
+			  if (el == i){
+				  tmpAr[i] ++;
+				  break;
+			  }
+		  }	 
+	  }
+	  System.out.println("Initial array: "+Arrays.toString(ar10));
+	  System.out.println("Appearence quantity array: "+Arrays.toString(tmpAr));
+	  int maxnum = 0;
+	  for (int i = 0; i<tmpAr.length; i ++){
+		  if (tmpAr[i]>maxnum){
+			  maxnum = tmpAr[i];
+		  }
+	  }
+	  for (int i = 0; i<tmpAr.length; i ++){
+		  if (tmpAr[i]==maxnum){
+			  System.out.println("Element "+i+" has maximum appearence times "+maxnum);
+		  }
+	  }
 	}
 
 }
