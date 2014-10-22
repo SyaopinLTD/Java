@@ -1,0 +1,57 @@
+import java.util.Arrays;
+import java.util.Random;
+public class HomeWork8 {
+
+	public static void main(String[] args) {
+		System.out.println("======================= Task 1 =========================");
+		byte ar [] = new byte [16];
+		byte tmp = 0;
+		Random rand = new Random();
+		rand.nextBytes(ar);
+		Arrays.sort(ar);
+		System.out.println("Array before reversing: "+Arrays.toString(ar));
+		for (int i = 0; i < ar.length/2; i ++){
+			tmp = ar[i];
+			ar[i] = ar[ar.length-1-i];
+			ar[ar.length-1-i] = tmp;
+		}
+		System.out.println("Array after reversing: "+Arrays.toString(ar));
+		System.out.println("======================= Task 2 =========================");
+		int []  ar1 = new int [100];
+		int key = 5, step = 10;
+		for (int i = 0; i< ar1.length; i++){
+			ar1[i] = rand.nextInt(10);
+		}
+		for (int i = 0; i < ar1.length; i += step){
+			Arrays.sort(ar1, i, i + step);
+			String str = Arrays.binarySearch(ar1, i, i + step, key)>0?"In ["+i+"; "+(i+step-1)+"] there is "+key:"In ["+i+"; "+(i+step-1)+"] there is NO "+key;
+			System.out.println(str);
+		}
+		System.out.println("======================= Task 3 =========================");
+		int n = 5, m = 10; 
+		int []  ar2 = new int [n];
+		int []  ar3 = new int [m];
+		for (int i = 0; i < n; i ++){
+			ar2[i] = rand.nextInt(6); 
+		}
+		for (int i = 0; i < m; i ++){
+			ar3[i] = rand.nextInt(15); 
+		}
+		System.out.println("First array: "+Arrays.toString(ar2));
+		System.out.println("Second array: "+Arrays.toString(ar3));
+		Arrays.sort(ar3);
+		for (int el: ar2){
+			if (el !=0){
+		    	while(true){
+		    		if (Arrays.binarySearch(ar3, el) >=0 ){		    		
+			    	  ar3[Arrays.binarySearch(ar3, el)] = 0;
+		    		}
+		    		else {
+		    			break;
+		    		}
+			      }
+			}
+		}
+		System.out.println("Second array after change: "+Arrays.toString(ar3));
+	}
+}
