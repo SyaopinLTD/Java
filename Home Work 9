@@ -1,0 +1,168 @@
+import java.util.Arrays;
+import java.util.Random;
+public class HomeWork9 {
+
+	public static void main(String[] args) {
+		System.out.println("======================Task1=====================");
+		int [][] ar = new int [4][4];
+		int maxEl = Integer.MIN_VALUE;
+		Random rand = new Random();
+		System.out.println("My initial array: ");
+		for (int i = 0; i < ar.length; i ++){
+			for (int j= 0; j < ar.length; j ++){
+				ar[i][j] = rand.nextInt(10);
+				System.out.printf("%-5d", ar[i][j]);
+			}
+			System.out.println();
+			if (ar[i][i]>maxEl){
+				maxEl = ar[i][i];
+			}
+		}
+		System.out.println("Maximum diagonal element: "+maxEl);
+		System.out.println("======================Task2=====================");
+		int m = 5, n = 6;
+		int [][] ar1 = new int [m][n];
+		int [] ar2 = new int [m+n];
+		for (int i = 0; i < ar2.length; i++){
+			ar2[i] = rand.nextInt(20);
+		}
+		System.out.println("One-dimensional array: "+Arrays.toString(ar2));
+		System.out.println("Two-dimensional array: ");
+        for (int i = 0; i < m; i ++){
+        	for (int j = 0; j < n; j ++){
+        		int tmp = 0;
+        		if ((i+j)%2 == 0){
+        			for (int k = i; k <= m+j; k++){
+        				tmp +=ar2[k];
+        			}
+        			ar1[i][j] = tmp;
+        		}
+        		else {
+        			for (int k = j; k <= n+i; k++){
+        				tmp +=ar2[k];
+        			}
+        			ar1[i][j] = tmp;
+        		}
+        		System.out.printf("%-5d", ar1[i][j]);
+        	}
+        	System.out.println();
+        }
+        System.out.println("======================Task3=====================");
+        m = 6;
+        n = 8;
+        int max = 0, min = 0, imax = 0, jmax = 0, imin = 0, jmin = 0;
+        int [][] ar3 = new int [m][n];
+        System.out.println("My initial array: ");
+        for (int i = 0; i < m; i ++){
+        	for (int j = 0; j < n; j ++){
+        		ar3[i][j] = rand.nextInt(20);
+        		if ((i == 0)&&(j == 0)){
+        			max = ar3[0][0];
+        			min = ar3[0][0];
+        		}
+        		if (ar3[i][j] > max){
+        			max = ar3[i][j];
+        			imax = i;
+        			jmax = j;
+        		}
+        		if (ar3[i][j] < min){
+        			min = ar3[i][j];
+        			imin = i;
+        			jmin = j;
+        		}
+        		System.out.printf("%-5d", ar3[i][j]);	
+        	}
+        	System.out.println();
+        }
+        System.out.println("Maximum ("+imax+", "+jmax+"): "+max);
+        System.out.println("Minimum ("+imin+", "+jmin+"): "+min);
+        System.out.println("My array after change: ");
+        for (int i = 0; i < m; i ++){
+        	for (int j = 0; j < n; j ++){
+        		
+        		if (ar3[i][j] == min){
+        			ar3[i][j] = max;
+        			System.out.printf("%-5d", ar3[i][j]);
+        			continue;
+        		}
+        		if (ar3[i][j] == max){
+        			ar3[i][j] = min;
+        			System.out.printf("%-5d", ar3[i][j]);
+        			continue;
+        		}
+        		System.out.printf("%-5d", ar3[i][j]);
+        	}
+        	System.out.println();
+        }	
+        System.out.println("======================Task4=====================");
+         n = 6;
+         float [][] ar4 = new float [n][n];
+         float maxf = Float.MIN_VALUE, minf = Float.MAX_VALUE;
+         float scalar = 0;
+         imax = 0;
+         imin = 0;
+         jmax = 0;
+         jmin = 0;
+         System.out.println("My initial array: ");
+         for (int i = 0; i < n; i ++){
+         	for (int j = 0; j < n; j ++){
+         		ar4[i][j] = rand.nextFloat();
+         		if (ar4[i][j] > maxf){
+        			maxf = ar4[i][j];
+        			imax = i;
+        			jmax = j;
+        		}
+        		if (ar4[i][j] < minf){
+        			minf = ar4[i][j];
+        			imin = i;
+        			jmin = j;
+        		}
+         		System.out.printf("%-7.2f", ar4[i][j]);
+         	}
+         	System.out.println();
+         }
+         System.out.println("Maximum ("+imax+", "+jmax+"): "+maxf);
+         System.out.println("Minimum ("+imin+", "+jmin+"): "+minf);
+         for (int i = 0; i < n; i ++){
+        	 scalar +=  ar4[imax][i] * ar4[i][jmin];
+         }
+         System.out.println("Scalar: "+scalar);
+         System.out.println("======================Task5=====================");
+         m = 4;
+         n = 5;
+         char [][] ar5 = new char [m][n];
+         int count = 0, maxCount = 0, icount = 0;
+         char tmpC;
+         System.out.println("My initial array: ");
+         for (int i = 0; i < m; i ++){
+        	count = 0;
+          	for (int j = 0; j < n; j ++){
+          		ar5[i][j] = (char)(rand.nextInt(0x5F)+0x20);
+          		if (Character.isDigit(ar5[i][j])){
+          			count ++;
+          		}
+          		System.out.printf("%-5s", ar5[i][j]);
+          	}
+          	if (count > maxCount){
+          		maxCount = count;
+          		icount = i;
+          	}
+          	System.out.println();
+          }
+         System.out.println("Row which has max digits: "+icount);
+         if (icount != (m-1)){
+        	 for (int j = 0; j < n; j++){
+        		 tmpC = ar5[icount][j];
+        		 ar5[icount][j] = ar5[m-1][j];
+        		 ar5[m-1][j] = tmpC;
+        	 }
+         }
+         System.out.println("Array after change: ");
+         for (int i = 0; i < m; i ++){
+          	for (int j = 0; j < n; j ++){
+          		System.out.printf("%-5s", ar5[i][j]);
+          	}
+          	System.out.println();
+          } 
+	}
+}
