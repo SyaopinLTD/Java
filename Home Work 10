@@ -1,0 +1,129 @@
+import java.util.Arrays;
+import java.util.Random;
+
+
+public class HomeWork10 {
+
+	public static void main(String[] args) {
+		System.out.println("=====================Task1=====================");
+		int m = 4, n = 5; 
+        int [][] ar2 = new int [m][n];
+        Random rand = new Random();
+        for (int i = 0; i < m; i ++){
+        	for (int j = 0; j < n; j ++){
+           ar2[i][j] = rand.nextInt(20);
+           System.out.printf("%-5d", ar2[i][j]);
+        	}
+        System.out.println();
+        }
+        int min = Integer.MAX_VALUE;
+        int imin = 0;
+        for (int i = 0; i < m; i ++){
+        	for (int j = 0; j < n; j ++){
+        		if (ar2[i][j] < min){
+        			min = ar2[i][j];
+        			imin = i;
+        		}
+        	}
+        }
+        System.out.println("Minimal element at row: "+imin+" is "+min);
+        int [][] ar3 = new int [m+1][];
+        int k = 0;
+        for (int i = 0; i < m; i++){
+        	ar3[i+k] = Arrays.copyOf(ar2[i], ar2[i].length);
+        	System.out.println(Arrays.toString(ar3[i+k]));
+        	if (i == imin){
+        		ar3[i+1] = Arrays.copyOf(ar2[i], ar2[i].length);
+        		Arrays.fill(ar3[i+1], 1);
+        		System.out.println(Arrays.toString(ar3[i+1]));
+        		k = 1;
+        	}
+      		
+        }
+        System.out.println("=====================Task2=====================");
+        int K = 4, N = 4, M = 5;
+        int [] A = new int [K];
+        int [][]B = new int [N][M];
+        System.out.println("Array A[K]: ");
+        for (int i = 0; i < K; i ++){
+        	A[i] = rand.nextInt(6);
+        	System.out.printf("%-5d", A[i]);
+        }
+        System.out.println("\nArray B[N][M] before change: ");
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+           B[i][j] = rand.nextInt(16);
+           System.out.printf("%-5d", B[i][j]);
+        	}
+        System.out.println();
+        }
+        Arrays.sort(A);
+        System.out.println("\nArray B[N][M] after change: ");
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+               if (Arrays.binarySearch(A, B[i][j]) > 0){
+            	   B[i][j] = 0;
+                }
+               System.out.printf("%-5d", B[i][j]); 
+        	}
+        	System.out.println();
+        }
+        System.out.println("=====================Task3=====================");
+        N = 6;
+        M = 7;
+        K = 4;
+        int R = 2;
+        int [][]A1 = new int [N][M];
+        System.out.println("K = "+K+"\nR = "+R);
+        System.out.println("Initial array: ");
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+           A1[i][j] = rand.nextInt(16);
+           System.out.printf("%-5d", A1[i][j]);
+        	}
+        System.out.println();
+        }
+        int [] tmp = Arrays.copyOf(A1[K], A1[K].length);
+        System.out.println(Arrays.toString(tmp));
+        for (int i = K; i > R; i --){
+        	A1[i] = Arrays.copyOf(A1[i-1], A1[i-1].length);
+        }
+        A1[R+1] = Arrays.copyOf(tmp, tmp.length);
+        System.out.println("Array after change: ");
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+           System.out.printf("%-5d", A1[i][j]);
+        	}
+        System.out.println();
+        }
+        System.out.println("=====================Task4=====================");
+        N = 4;
+        M = 5;
+        int [][] B1 = new int [N][M];
+        int [] tmp1 = new int [N*M];
+        int tmp2 = 0;
+        System.out.println("Initial array: ");
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+              B1[i][j] = rand.nextInt(25);
+              tmp1[j+tmp2] = B1[i][j];
+              System.out.printf("%-5d", B1[i][j]);
+        	}
+        	tmp2 += M;
+        System.out.println();
+        }
+        System.out.println(Arrays.toString(tmp1));
+        System.out.println("Array after sorting: ");
+        Arrays.sort(tmp1);
+        tmp2 = 0;
+        for (int i = 0; i < N; i ++){
+        	for (int j = 0; j < M; j ++){
+              B1[i][j] = tmp1[j+tmp2];
+              tmp1[j+tmp2] = B1[i][j];
+              System.out.printf("%-5d", B1[i][j]);
+        	}
+        	tmp2 += M;
+        System.out.println();
+        }
+	}
+}
