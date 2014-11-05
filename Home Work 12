@@ -1,0 +1,79 @@
+import java.util.Arrays;
+import java.util.Random;
+
+
+public class HomeWork12 {
+	
+static long sumProgression(int n){     // Task 1: recursive function for arithmetical progression
+	int d = 3;
+	int a1 = 5;
+	long sum = (n - 1) * d + a1;
+	if (n == 0){
+		return 0;
+	}
+	System.out.printf(sum+"+");
+    return sum + sumProgression(n - 1);
+}
+
+static byte [] isUnique (byte []a){      //Task 4: check array for unique elements
+	 byte [] tmp = Arrays.copyOf(a, a.length); 
+	 int count = 0;
+	 Arrays.sort(tmp);
+	 for (int i = 0 ; i < a.length-1; i ++){
+		 if (tmp[i] == tmp[i+1]){
+			count ++;
+		 }
+	 }
+	 byte [] tmp1 = new byte[a.length-count];
+	 int index = 0;
+	 for (int i = 0 ; i < a.length-1; i ++){
+         if (tmp[i] != tmp[i+1]){
+        	 tmp1[i - index] = tmp[i];
+        	 tmp1[i - index + 1] = tmp[i + 1];
+         }
+         else{
+        	 index ++;
+         }
+	 }
+	 return tmp1;
+}
+
+static String [] getLetterString(String ... strs){
+	boolean check = true;
+	int count = 0;
+	for (String el: strs){
+		char [] tmp = el.toCharArray();
+		check = true;
+        for(char c: tmp){
+        	if (!Character.isAlphabetic(c)){
+        		check = false;
+        		break;
+        	}
+        }
+        if (check == true){
+        	count ++;
+        }
+	}
+	return strs;
+}
+	public static void main(String[] args) {
+    System.out.println("=====================Task 1=======================");
+    
+    System.out.println("\nAnswer: "+sumProgression(5));
+    System.out.println("=====================Task 4=======================");
+    
+    int n = 20;
+    byte [] ar = new byte [n]; 
+    Random rand = new Random();
+    rand.nextBytes(ar);
+    byte [] tmp = Arrays.copyOf(ar, ar.length);
+    Arrays.sort(tmp);
+    System.out.println("My array: \n"+Arrays.toString(tmp));
+    System.out.println("My unique array: \n"+Arrays.toString(isUnique(ar)));
+    System.out.println("=====================Task 5=======================");
+    
+    String [] ar1 = {"123","234","345"};
+    System.out.println(Arrays.toString(getLetterString(ar1)));
+
+	}
+}
