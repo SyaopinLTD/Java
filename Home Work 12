@@ -15,6 +15,16 @@ static long sumProgression(int n){     // Task 1: recursive function for arithme
     return sum + sumProgression(n - 1);
 }
 
+static int[] changetoBinary(int dgt, int[] ar, int idx){    // Task 2: recursive function for change digit to binary
+		if (dgt == 0){
+			ar[idx] = 9;
+			return ar;
+		}		
+		ar[idx] = dgt % 2;
+		dgt = dgt / 2;
+  return changetoBinary(dgt, ar, idx + 1);
+}
+
 static byte [] isUnique (byte []a){      //Task 4: check array for unique elements
 	 byte [] tmp = Arrays.copyOf(a, a.length); 
 	 int count = 0;
@@ -27,20 +37,21 @@ static byte [] isUnique (byte []a){      //Task 4: check array for unique elemen
 	 byte [] tmp1 = new byte[a.length-count];
 	 int index = 0;
 	 for (int i = 0 ; i < a.length-1; i ++){
-         if (tmp[i] != tmp[i+1]){
-        	 tmp1[i - index] = tmp[i];
-        	 tmp1[i - index + 1] = tmp[i + 1];
-         }
-         else{
-        	 index ++;
-         }
+        if (tmp[i] != tmp[i+1]){
+       	 tmp1[i - index] = tmp[i];
+       	 tmp1[i - index + 1] = tmp[i + 1];
+        }
+        else{
+       	 index ++;
+        }
 	 }
 	 return tmp1;
 }
 
-static String [] getLetterString(String ... strs){
+static String [] getLetterString(String ... strs){     //Task 5: output array with only alphabetic strings
 	boolean check = true;
-	int count = 0;
+	String []tmp1 = new String [strs.length];
+	int idx = 0;
 	for (String el: strs){
 		char [] tmp = el.toCharArray();
 		check = true;
@@ -51,15 +62,22 @@ static String [] getLetterString(String ... strs){
         	}
         }
         if (check == true){
-        	count ++;
+        	tmp1[idx] = el;
+        	idx ++;     	
         }
 	}
-	return strs;
+	return tmp1;
 }
 	public static void main(String[] args) {
     System.out.println("=====================Task 1=======================");
     
     System.out.println("\nAnswer: "+sumProgression(5));
+    System.out.println("=====================Task 2=======================");
+    
+    int [] binaryAr = new int [8];
+    changetoBinary(10, binaryAr, 0);
+    System.out.println(Arrays.toString(binaryAr));
+    
     System.out.println("=====================Task 4=======================");
     
     int n = 20;
@@ -72,8 +90,9 @@ static String [] getLetterString(String ... strs){
     System.out.println("My unique array: \n"+Arrays.toString(isUnique(ar)));
     System.out.println("=====================Task 5=======================");
     
-    String [] ar1 = {"123","234","345"};
-    System.out.println(Arrays.toString(getLetterString(ar1)));
+    String [] ar1 = {"abc","df4g","qwer", "kgpfkd dkgpkp", "fsdfsdf"};
+    System.out.println("Array with strings only Alphabetic symbols: "+Arrays.toString(getLetterString(ar1)));
 
 	}
 }
+
