@@ -1,0 +1,89 @@
+=============================Class Tabulation======================
+package Tabulation;
+
+public class Tabulation {
+	double xBegin;
+	double xEnd;
+	double h;
+	public Tabulation(){
+		this.xBegin = 0;
+		this.xEnd = 6;
+		this.h = 0.25;
+	}
+	public Tabulation(double xBegin, double xEnd, double h){
+		this.xBegin = xBegin;
+		this.xEnd = xEnd;
+		this.h = h;
+	}
+    private double functionGreatThree (double x){
+    	return Math.sin(x)/Math.sqrt(x * x + 1);
+    }
+    private double functionLessThree (double x){
+    	return Math.log10(1 + x * x)/(1 + x * x);
+    }
+    public double [][] tabulate(){
+    	int idx = (int)(Math.abs(xEnd - xBegin)/0.25) + 1;
+    	double [][] ar = new double [idx][2];
+    	for (int i = 0; i < idx; i ++, xBegin += h){
+    		if (xBegin < 3){
+    			ar[i][0] = xBegin;
+    			ar[i][1] = functionLessThree (xBegin);
+    		}
+    		else{
+    			ar[i][0] = xBegin;
+    			ar[i][1] = functionGreatThree (xBegin);
+    		}
+    	}
+    	return ar;
+    }
+}
+==========================TabulationMain ===========================
+package Tabulation;
+import Print.PrintArray;
+
+public class TabulationMain {
+
+	public static void main(String[] args) {
+		Tabulation tab = new Tabulation();
+
+	}
+
+}
+=======================Print Array======================================
+package Print;
+public class PrintArray {
+	public void printDoubleArray(double [][]ar){
+		for (double [] el: ar){
+			System.out.printf("%5f",el);
+		}
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+}
+====================Class Cat======================
+package Cat;
+
+public class Cat {
+	String name;
+	int age;
+	String breed;
+	String gender;
+	String address;
+	final double dayRation = 10;
+	double currentRation;
+	Cat(){
+		this.name = "Barsik";
+		this.age = -1;
+		this.address = "unknown";
+	}
+	Cat(){
+		this.name = "Barsik";
+		this.age = -1;
+		this.address = "unknown";
+	}
+
+}
+=====================================
