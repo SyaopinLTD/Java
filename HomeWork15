@@ -1,0 +1,43 @@
+import java.util.Arrays;
+
+
+public class HomeWork15 {
+
+	public static void main(String[] args) {
+		System.out.println("===============Task1===============");
+		String str = "gdhg67ye2byq3b kcci78";
+		int sum = 0;
+		for (int i = 0; i < str.length(); i ++){
+			
+			if(Character.isDigit(str.charAt(i))){
+				sum += Character.digit(str.charAt(i), 10);
+			}
+		}
+		System.out.println("Your string: "+str);
+        System.out.println("Summary of all digits: "+sum);
+        System.out.println("===============Task2===============");
+        String str1 = "Jfksfk njvn sdvoneqwe dsvos one scosvov uihgidf one";
+        String search = "one";
+        String result = "";
+        System.out.println("Your string: "+str1+"\nAnd you search: "+search);
+        result = str1.substring(0, str1.indexOf(search)) + str1.substring(str1.indexOf(search) + search.length());
+        System.out.println("Result: "+result);
+        
+        StringBuffer str2 = new StringBuffer("qwe wtyerwuwier two jfskdfjks two");
+        String search1 = "two";
+        System.out.println("\nSecond method: \nYour string: "+str2+"\nAnd you search: "+search1);
+        str2.delete(str2.indexOf(search1), str2.indexOf(search1) + search1.length());      
+        System.out.println("Result: "+str2);
+        
+        System.out.println("===============Task3===============");
+        String str3 = "Qwer4yuiopasdfgh16jkl";
+        char [] dst = new char [11];
+        str3.getChars(5, 16, dst, 0);
+        Arrays.sort(dst);
+        String str4 = new String(dst);
+        String result1 = "";
+        result1 = str3.substring(0, 5)+str4+str3.substring(16, str3.length());
+        System.out.println(result1);
+	}
+
+}
