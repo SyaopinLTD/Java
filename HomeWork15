@@ -41,3 +41,86 @@ public class HomeWork15 {
 	}
 
 }
+
+===================================================
+=============Triangle class=========================
+package Triangle;
+
+import java.awt.Point;
+
+public class Triangle {
+private Point a = new Point();
+private Point b = new Point();
+private Point c = new Point();
+public static int equal = 1;
+public static int isos = 2;
+public static int uncond = 3;
+Triangle(){
+	/*Point a = new Point();
+	Point b = new Point();
+	Point c = new Point();*/
+	a.setLocation(2, 2);
+	b.setLocation(4, 2);
+	c.setLocation(3, 3);
+}
+Triangle(double xa, double ya, double xb, double yb, double xc, double yc){
+	/*Point a = new Point();
+	Point b = new Point();
+	Point c = new Point();*/
+	a.setLocation(xa, ya);
+	b.setLocation(xb, yb);
+	c.setLocation(xc, yc);
+}
+public boolean checkTriangle(){
+	if ((a.distance(b)<(b.distance(c) + a.distance(c))) && (a.distance(c)<(b.distance(c) + a.distance(b))) 
+			&& (b.distance(c)<(a.distance(b) + a.distance(c)))){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+public int getTriangleType(){
+	if (checkTriangle()){
+		if ((a.distance(b) == b.distance(c)) && (a.distance(b) == a.distance(c))){
+			return equal;
+		}
+		else if ((a.distance(b) == b.distance(c)) || (a.distance(b) == a.distance(c))
+				|| (b.distance(c) == a.distance(c))){
+			return isos;
+		}
+		else {
+			return uncond;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+public double perimetr(){
+	return a.distance(b) + b.distance(c) + a.distance(c);
+}
+public double square(){
+	return Math.sqrt(perimetr()*(perimetr() - a.distance(b))*(perimetr() - b.distance(c))*(perimetr() - a.distance(c)));
+}
+}
+==================================================
+============Triangle main======================
+package Triangle;
+
+public class TriangleMain {
+
+	public static void main(String[] args) {
+		Triangle tri = new Triangle();
+		Triangle tri1 = new Triangle(1, 1, 1, 2, 3, 1);
+		switch (tri.getTriangleType()) {
+		 case 1: System.out.println("This is equilateral trinagle"); break;
+		 case 2: System.out.println("This is isosceles triangle"); break;
+		 case 3: System.out.println("This is unconditioned triangle"); break;
+		 default: System.out.println("This is not a triangle"); break;
+		}
+		System.out.println("Perimetr of triangle: "+tri.perimetr());
+		System.out.println("Perimetr of triangle: "+tri.square());
+	}
+
+}
