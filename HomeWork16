@@ -1,0 +1,96 @@
+=====================Book=============================
+package Book;
+
+public class Book {
+	
+private String author;
+private String title;
+private float price;
+private int pages;
+
+protected void setPrice(float price){
+	this.price = price;
+}
+public float getPrice(){
+	return price;
+}
+public int getPages(){
+	return pages;
+}
+public Book(){
+	this.author = "Unknown";
+	this.title = "Unknown";
+	this.price = 0.0f;
+}
+public Book(String title, String author, int pages){
+	this.author = author;
+	this.title = title;
+	this.pages = pages;
+}
+@Override
+public String toString() {
+	return String.format("Book [title=%s, author=%s, price=%s, pages=%s]", title, author, price, pages);
+}
+
+}
+
+==============================PrintedBook================================
+package Book;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class PrintedBook extends Book{
+ private String typography;
+ private Calendar issueDate;
+ private int copies;
+ 
+ private void setIssueDate(Calendar issueDate) {
+	 this.issueDate.set(Calendar.YEAR, issueDate.get(Calendar.YEAR));
+	 this.issueDate.set(Calendar.MONTH, issueDate.get(Calendar.MONTH));
+	 this.issueDate.set(Calendar.DAY_OF_MONTH,
+	 issueDate.get(Calendar.DAY_OF_MONTH));
+	 }
+ public Calendar getIssueDate(){
+	 return issueDate;
+ }
+ public String getTypography(){
+	return typography;
+}
+ private void setTypography(String typography){
+	this.typography = typography;
+}
+ public PrintedBook(){
+	super();
+}
+ public PrintedBook(String title, String author, int pages){
+	 super(title, author, pages);
+	 issueDate = new GregorianCalendar (1900,01, 01);
+	 typography = "Unknown";
+	 copies = 0;
+ }
+ private void setPrice(){
+	 if (this.copies >= 2000){
+		 super.setPrice((float)(0.2 * super.getPages() * 1.2));
+	 }
+	 if (this.copies >= 1000 && this.copies < 2000){
+		 super.setPrice((float)(0.3 * super.getPages() * 1.2));
+	 }
+	 if (this.copies < 1000){
+		 super.setPrice((float)(0.4 * super.getPages() * 1.2));
+	 }
+	
+ }
+ public void print (String typography, int copies){
+	 this.setTypography(typography);
+	 this.copies = copies;
+	 this.setPrice();
+	 this.setIssueDate(getIssueDate());
+ }
+@Override
+public String toString() {
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
+	return super.toString() + String.format("\ntypography = %s, number of(printed) copies = %d \nissueDate = %s\n",typography, copies,
+	sdf.format(issueDate.getTime()));
+ }
+}
