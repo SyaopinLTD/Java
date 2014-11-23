@@ -1,0 +1,34 @@
+
+public class HomeWork17 {
+	static public int countE(String s){
+		int idx = 0;
+		int count = 0;
+		while (s.indexOf('e', idx) !=-1){
+			count ++;
+			idx = s.indexOf('e', idx) + 1;
+		}
+		return count;
+	}
+
+	public static void main(String[] args) {
+		System.out.println("==================Task 1===================");
+		String str = "The first few moments after landing turned tense as the ESA team worked to determine if everything worked but Philae Lander Manager Stephan Ullamec broke the strained silence";
+        String check = "BbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz";
+        String [] words = str.split(" ");
+        StringBuffer result = new StringBuffer();
+        for (String word: words){
+        	if ((check.indexOf(word.charAt(0)) == -1) || (word.length()!=5)){
+        		result.append(word+" ");
+        	}
+        }
+        System.out.println("Initial phrase: "+str);
+        System.out.println("Result phrase: "+result);
+        System.out.println("==================Task 2===================");
+        String str1 = "Arguments referenced by the format specifiers in the format string";
+        String [] words1 = str1.split(" ");
+        for (String word1: words1){
+        	System.out.println(countE(word1));
+        }
+        
+	}
+}
