@@ -1,4 +1,3 @@
-
 public class HomeWork17 {
 	static public int countE(String s){
 		int idx = 0;
@@ -23,12 +22,125 @@ public class HomeWork17 {
         }
         System.out.println("Initial phrase: "+str);
         System.out.println("Result phrase: "+result);
+        
         System.out.println("==================Task 2===================");
-        String str1 = "Arguments referenced by the format specifiers in the format string";
+        
+        //String str1 = "Arguments referenced by the format specifiers in the format string";
+        String str1 = "The first few moments after landing turned tense as the ESA team worked";
         String [] words1 = str1.split(" ");
+        
+        int countE = 0;
+        int countNotE = 0;
         for (String word1: words1){
-        	System.out.println(countE(word1));
+        	if (countE(word1) > 0){
+        		countE ++; 
+        	}
+        	else countNotE ++;
         }
         
+        String [] withE = new String [countE];
+        String [] withoutE = new String [countNotE];
+        int x = 0;
+        int y = 0;
+        for (String word1: words1){
+        	if (countE(word1) > 0){
+        		withE[x] = word1;
+        		x ++;
+        	}
+        	else {
+        		withoutE[y] = word1;
+        		y ++;
+        		}
+        }
+       String tmp = "";
+       int idx = 0;
+       
+       
+       for (int i = 0; i < withoutE.length; i ++){
+    	   tmp = withoutE[0];
+    	   idx = 0;
+    	   for (int j = 1; j < withoutE.length - i; j ++){
+    		   if (withoutE[j].compareTo(tmp) > 0){
+    			   tmp = withoutE[j];
+    			   idx = j;
+    		   }
+    	   }
+		   withoutE[idx] = withoutE[withoutE.length - 1 - i];
+		   withoutE[withoutE.length - 1 - i] = tmp;
+       }
+       
+       for (int i = 0; i < withE.length; i ++){
+    	   tmp = withE[0];
+    	   idx = 0;
+    	   for (int j = 1; j < withE.length - i; j ++){
+    		   if (countE(withE[j]) > countE(tmp)){
+    			   tmp = withE[j];
+    			   idx = j;
+    		   }
+    		   else if (countE(withE[j]) == countE(tmp)){
+    			   if (withE[j].compareTo(tmp) > 0){
+        			   tmp = withE[j];
+        			   idx = j;
+        		   }
+    		   }
+    	   }
+		   withE[idx] = withE[withE.length - 1 - i];
+		   withE[withE.length - 1 - i] = tmp;
+       }
+       StringBuffer result1 = new StringBuffer();
+       for (String word: withoutE){
+    	   result1.append(word+" ");
+       } 
+       for (String word: withE){
+    	   result1.append(word+" ");
+       } 
+       System.out.println("Initial string: "+str1);
+       System.out.println("Result string: "+result1);
 	}
 }
+
+========================================================
+=========================Class Text====================
+package Text;
+
+import java.util.Arrays;
+
+abstract public class Text {
+ private String title;
+ private String [] sentences;
+ public Text(){
+	 title = "Default";
+	 this.sentences = new String [1];
+ }
+ public Text(String [] text, String title){
+	 this.title = title;
+	 this.sentences = text;
+ }
+ public int getN(){
+	 int count = 0;
+	 for (int i = 0; i < sentences.length; i ++){
+		 if( sentences[i] != ""){
+			 count ++;
+		 }
+	 }
+	 return count;
+ }
+ public String [] deleteSentence(int idx){
+	 for(int i = idx; i < sentences.length-1; i ++){
+		 sentences[i] =  sentences[i + 1];
+	 }
+	 sentences[sentences.length] = "";
+	 return sentences;
+ }
+ abstract void edit();
+@Override
+public String toString() {
+	StringBuffer result = new StringBuffer();
+	for (int i = 0; i < this.sentences.length; i ++){
+		result+=String.format(i+" "+this.sentences[i]+"\n");
+	}
+	return result;
+}
+ 
+}
+
