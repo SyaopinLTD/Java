@@ -1,0 +1,21 @@
+import java.util.Arrays;
+
+
+public class Java2_HT2 {
+
+	public static void main(String[] args) {
+		System.out.println("=============Task 1==============");
+		String str = "to be or not to be";
+		String [] tmp = str.split("o");
+		System.out.println("Quantity of o in \""+str+"\" is: "+(tmp.length-1));
+
+		System.out.println("=============Task 2==============");
+		int a = 3, b = 8;
+		System.out.printf("Before: a = %d, b = %d", a, b);
+		a = a + b;
+		b = a - b;
+		a = a - b;
+		System.out.printf("\nAfter: a = %d, b = %d", a, b);
+	}
+
+}
