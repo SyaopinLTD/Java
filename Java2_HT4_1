@@ -1,0 +1,96 @@
+package HomeWork1;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Java2_HT4 {
+
+	public static void main(String[] args) {
+		char [][] field = {
+				{'*', '*', '*'},
+				{'*', '*', '*'},
+				{'*', '*', '*'}
+		};
+	show(field);
+while(check(field) == 0){
+	humanStep(field);
+	compStep(field);
+    show(field);
+}
+
+    
+	}
+static void show(char [][] f){
+	System.out.println("Current status on field:\n");
+	for (char[] x: f){
+		for(char y: x){
+			System.out.printf("%4c", y);
+		}
+		System.out.println();
+	}
+}
+static void humanStep(char [][] f){
+	System.out.println("Enter x (from 1 to 3):");
+	Scanner sc = new Scanner(System.in);
+	int x = sc.nextInt();
+	System.out.println("Enter y (from 1 to 3):");
+	int y = sc.nextInt();
+	if (f[x - 1][y - 1] == '*'){
+		f[x - 1][y - 1] = 'X';
+	}
+	else{ 
+		System.out.println("This cell is already occupied");	
+		humanStep(f);
+	}
+}
+static void compStep(char [][] f){
+Random rand = new Random();
+	int x = rand.nextInt(3);
+	int y = rand.nextInt(3);
+	if (f[x][y] == '*'){
+		f[x][y] = 'O';
+	}
+	else{ 	
+		compStep(f);
+	}
+}
+static int check(char [][] f){
+	int check = 0;
+	for (char []i: f){
+		if (Arrays.toString(i).equals("[X, X, X]")){
+			check = 1; break;
+		}
+		if (Arrays.toString(i).equals("[O, O, O]")){
+			check = 2; break;
+		}
+	}
+	
+	for (int i = 0; i < f.length; i ++){
+		String tmp = "";
+		for (int j = 0; j < f[i].length; j ++){
+			tmp+=f[j][i];
+		}
+		if (tmp.equals("XXX")){
+			check = 1; break;
+		}
+		if (tmp.equals("OOO")){
+			check = 2; break;
+		}
+	}
+	
+	if(((f[0][0]=='X')&&(f[1][1]=='X')&&(f[2][2]=='X'))||((f[2][0]=='X')&&(f[1][1]=='X')&&(f[0][2]=='X'))){
+		check = 1;
+	}
+	if(((f[0][0]=='O')&&(f[1][1]=='O')&&(f[2][2]=='O'))||((f[2][0]=='O')&&(f[1][1]=='O')&&(f[0][2]=='O'))){
+		check = 2;
+	}
+	if (check == 1){
+		System.out.println("You Win!");
+	}
+	else if(check == 2){
+		System.out.println("Computer Win!");
+	}
+	return check;
+}
+}
