@@ -38,10 +38,12 @@ static void humanStep(char [][] f){
 	int y = sc.nextInt();
 	if (f[x - 1][y - 1] == '*'){
 		f[x - 1][y - 1] = 'X';
+		sc.close();
 	}
 	else{ 
 		System.out.println("This cell is already occupied");	
 		humanStep(f);
+		sc.close();
 	}
 }
 static void compStep(char [][] f){
