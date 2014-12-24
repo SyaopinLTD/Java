@@ -1,0 +1,117 @@
+==========================================Country.java================================================
+package HomeTask6;
+
+public class Country {
+	private String name;
+	private String capital;
+	private int area;
+
+	public Country(String name, String capital, int area) {
+		this.name = name;
+		this.capital = capital;
+		this.area = area;
+	}
+
+	String getName() {
+		return name;
+	}
+
+	String getCap() {
+		return capital;
+	}
+
+	int getArea() {
+		return area;
+	}
+
+	public String toString() {
+		return "Country [name=" + name + ", capital=" + capital + ", area="
+				+ area + "]";
+	}
+}
+
+========================CountryCmp.java========================
+
+package HomeTask6;
+
+public class CountryCmp implements java.util.Comparator{
+	public enum Check {
+		NAMEASC, NAMEDESC, CAPASC, CAPDESC, AREAASC, AREADESC
+		}
+	Check check;
+	CountryCmp(Check c){
+		this.check = c;
+	}
+	public int compare(Object a, Object b) {
+		Country aa = (Country) a;
+		Country bb = (Country) b;
+		if (check == Check.NAMEASC){
+			return aa.getName().compareTo(bb.getName());
+		}
+		if (check == Check.NAMEDESC){
+			return -aa.getName().compareTo(bb.getName());
+		}
+		if (check == Check.CAPASC){
+			return aa.getCap().compareTo(bb.getCap());
+		}
+		if (check == Check.CAPDESC){
+			return -aa.getCap().compareTo(bb.getCap());
+		}
+		if (check == Check.AREAASC){
+			return aa.getArea() - bb.getArea();
+		}
+		if (check == Check.AREADESC){
+			return bb.getArea() - aa.getArea();
+		}
+		return 0;
+	}
+}
+
+==================MainCountry.java=====================================
+
+package HomeTask6;
+
+import java.util.Arrays;
+
+import HomeTask6.CountryCmp.Check;
+
+public class MainCountry {
+	static void print(Country[] a) {
+		for (Country b : a) {
+			System.out.println(b.toString());
+		}
+	}
+
+	public static void main(String[] args) {
+		Country[] cc = { new Country("USA", "Washington", 500),
+				new Country("England", "London", 50),
+				new Country("Brasil", "Brasilia", 120),
+				new Country("Russia", "Moscow", 600),
+				new Country("France", "Paris", 80) };
+
+		System.out.println("Sorting by country name ascending: ");
+		Arrays.sort(cc, new CountryCmp(Check.NAMEASC));
+		print(cc);
+
+		System.out.println("\nSorting by country name descending: ");
+		Arrays.sort(cc, new CountryCmp(Check.NAMEDESC));
+		print(cc);
+		
+		System.out.println("\nSorting by country capital ascending: ");
+		Arrays.sort(cc, new CountryCmp(Check.CAPASC));
+		print(cc);
+
+		System.out.println("\nSorting by country capital descending: ");
+		Arrays.sort(cc, new CountryCmp(Check.CAPDESC));
+		print(cc);
+		
+		System.out.println("\nSorting by country area ascending: ");
+		Arrays.sort(cc, new CountryCmp(Check.AREAASC));
+		print(cc);
+
+		System.out.println("\nSorting by country area descending: ");
+		Arrays.sort(cc, new CountryCmp(Check.AREADESC));
+		print(cc);
+	}
+
+}
