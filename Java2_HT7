@@ -1,0 +1,35 @@
+package HomeTask7;
+
+import java.util.Stack;
+
+public class MainStack {
+
+	public static void main(String[] args) {
+		Stack<Integer> st = new Stack<Integer>();
+		for (int i = 0; i < 6; i++) {
+			st.push(i);
+		}
+		System.out.println("Stack before reverse: ");
+		System.out.println(st);
+		System.out.println("Stack after reverse: ");
+		reverse(st);
+		System.out.println(st);
+	}
+
+	static void reverse(Stack<Integer> inp) {    //method to reverse original stack
+		Stack<Integer> tmp = new Stack<Integer>();
+		Stack<Integer> tmp1 = new Stack<Integer>();
+		while (!inp.empty()) {
+			tmp.push(inp.peek());
+			inp.pop();
+		}
+		while (!tmp.empty()) {
+			tmp1.push(tmp.peek());
+			tmp.pop();
+		}
+		while (!tmp1.empty()) {
+			inp.push(tmp1.peek());
+			tmp1.pop();
+		}
+	}
+}
