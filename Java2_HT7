@@ -1,19 +1,25 @@
 package HomeTask7;
 
+import java.util.Random;
 import java.util.Stack;
 
 public class MainStack {
 
 	public static void main(String[] args) {
 		Stack<Integer> st = new Stack<Integer>();
-		for (int i = 0; i < 6; i++) {
-			st.push(i);
+		Random rand = new Random();
+		for (int i = 0; i <= stackLength; i++) {
+			st.push(rand.nextInt(20));
 		}
+		System.out.println("======================Task 3=====================");
 		System.out.println("Stack before reverse: ");
 		System.out.println(st);
 		System.out.println("Stack after reverse: ");
 		reverse(st);
 		System.out.println(st);
+		System.out.println("======================Task 5=====================");
+		System.out.println("Maximum element in "+st+ " is: "+maxFromStack(st));
+
 	}
 
 	static void reverse(Stack<Integer> inp) {    //method to reverse original stack
@@ -31,5 +37,23 @@ public class MainStack {
 			inp.push(tmp1.peek());
 			tmp1.pop();
 		}
+	}
+	static  int maxElement = Integer.MIN_VALUE;    //static variable to store maximum element of stack
+	static  int stackLength = 5;   //length of stack
+	static int tmp = stackLength;  //temporary variable for recursion
+	
+	static void stackSearchRecursion(Stack<Integer> s){ //method to search for maximum element in stack
+		while(tmp >=0){
+			int i = s.peek();
+			if (i > maxElement) maxElement = i;
+			s.pop();
+			tmp --;
+			stackSearchRecursion(s);
+			s.push(i);
+		}
+	}
+	static int maxFromStack(Stack<Integer> in){  //method to return maximum value
+		stackSearchRecursion(in);
+		return maxElement;
 	}
 }
