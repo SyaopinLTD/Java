@@ -1,0 +1,63 @@
+package HomeTask11;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.regex.*;
+
+
+import HomeTask9.Stack;
+
+public class Task2 {
+
+	public static void main(String[] args) {
+		System.out.println("------------Task 2------------");
+		Stack<String> st = new Stack<String>();
+		String open = "";
+		String close = "";
+		try{
+		FileReader fr = new FileReader("./src/HomeTask11/Test.html");  //Test.html with OK tags, Test2.html - with NOT Ok tags
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+			
+		while((line = br.readLine()) != null){
+			System.out.println(line);
+			 Pattern pat = Pattern.compile("</?[a-z]+[1-6]?\\s?[^>]*>");
+			 Matcher m = pat.matcher(line);
+			 while(m.find())  //while matcher finds next group
+			 {		//System.out.println("group=" + m.group()); //.replaceAll("[<,</,>]", ""));  //show group
+			 if (!m.group().contains("</")){
+				 open = m.group().replaceAll("[<,</,>]", "");
+				 open = open.split(" ")[0];
+			 }
+			 else {
+				 close = m.group().replaceAll("[<,</,>]", "");
+			 }
+			 System.out.println("open= "+open+", close= "+close);
+			 System.out.println(st);
+			 if (open != ""){
+				 st.push(open);
+				 open = "";
+			 }
+			 else{
+				 if (st.peek() == close){
+					 st.pop();
+					 close = "";
+				 }
+				 else 
+					 break;
+			 }
+			 
+		}
+		  }
+		}
+		catch(Exception e){
+			 System.out.println("Error with message: "+e.getMessage());
+		}
+		if (st.isEmpty()){
+			System.out.println("Tags are OK!");
+		}
+		else
+			System.out.println("Tags are NOT OK!");
+	}
+
+}
