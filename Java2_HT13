@@ -1,0 +1,162 @@
+=================Entry.java==============
+package HomeTask13;
+
+public class Entry {
+	private String name;
+	private int number;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public Entry(String name, int number) {
+		this.name = name;
+		this.number = number;
+	}
+
+	public String toString() {
+		return "[name=" + name + ", number=" + number + "]";
+	}
+}
+=============================TelBook.java====================================
+package HomeTask13;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class TelBook {
+	private ArrayList<Entry> m;
+
+	public TelBook() {
+		m = new ArrayList<Entry>();
+	}
+
+	public void addEntry(String s, int n) { // add new record to TelBook
+		m.add(new Entry(s, n));
+	}
+
+	public int findNum(String s) { // find number in TelBook by name
+		for (int i = 0; i < m.size(); i++) {
+			if (m.get(i).getName().equalsIgnoreCase(s))
+				return m.get(i).getNumber();
+		}
+		return 0;
+	}
+
+	public void removeEntryByName(String s) { // remove entry from TelBook by
+												// Name
+		boolean check = false;
+		for (int i = 0; i < m.size(); i++) {
+			if (m.get(i).getName().equalsIgnoreCase(s)) {
+				System.out.println("Removing entry ..." + m.get(i));
+				m.remove(i);
+				check = true;
+				break;
+			}
+		}
+		if (!check)
+			System.out.println("There is no entry with such name");
+
+	}
+
+	public void clearTelBook() { // clear TelBook
+		System.out.println("Clearing...");
+		m.clear();
+		System.out.println("Cleared");
+	}
+
+	public String toString() {
+		String res = "";
+		for (int i = 0; i < m.size(); i++) {
+			res += m.get(i).toString() + "\n";
+		}
+		return "TelBook \n" + res;
+	}
+
+	static public void drawMenu() {
+		System.out.println("============= Choose action ==========================");
+		System.out.println("============= 1. Show telephone book =================");
+		System.out.println("============= 2. Add an entry ========================");
+		System.out.println("============= 3. Find number by name =================");
+		System.out.println("============= 4. Remove entry by name ================");
+		System.out.println("============= 5. Clear telephone book ================");
+		System.out.println("============= 0. Exit ================================");
+	}
+
+	public void chooseMenu() {
+		drawMenu();
+		Scanner sc = new Scanner(System.in);
+		String input = "";
+		while (!input.equals("0")) {
+			input = sc.nextLine();
+			switch (input) {
+			case "1":
+				System.out.println(this);
+				drawMenu();
+				break;
+			case "2":
+				System.out.println("Input name: ");
+				String tmp_name = sc.nextLine();
+				System.out.println("Input number of " + tmp_name);
+				String tmp_number = sc.nextLine();
+				try {
+					this.addEntry(tmp_name, Integer.parseInt(tmp_number));
+				} catch (NumberFormatException e) {
+					System.out.println("Incorrect number format");
+				}
+				drawMenu();
+				break;
+			case "3":
+				System.out.println("Input name: ");
+				tmp_name = sc.nextLine();
+				if (this.findNum(tmp_name) != 0) {
+					System.out.println("Number of " + tmp_name + " is: "
+							+ this.findNum(tmp_name));
+				} else
+					System.out.println("There is no such name!");
+				drawMenu();
+				break;
+			case "4":
+				System.out.println("Input name: ");
+				tmp_name = sc.nextLine();
+				this.removeEntryByName(tmp_name);
+				drawMenu();
+				break;
+			case "5":
+				this.clearTelBook();
+				drawMenu();
+				break;
+			case "0":
+				System.out.println("Bye! ");
+				break;
+			default:
+				System.out.println("You entered wrong number");
+			}
+		}
+
+	}
+}
+===============================MainTelBook.java============================
+package HomeTask13;
+
+import java.util.Scanner;
+
+public class MainTelBook {
+
+	public static void main(String[] args) {
+		TelBook tb = new TelBook();
+		tb.chooseMenu();
+	}
+}
