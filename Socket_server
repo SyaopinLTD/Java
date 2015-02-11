@@ -1,0 +1,84 @@
+=====================LoggingChatServer.java==========================
+package HomeTask15;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class LoggingChatServer {
+
+    final ExecutorService executor = Executors.newFixedThreadPool(20);
+
+    public static void main(String[] args) throws IOException {
+        new LoggingChatServer().start();
+    }
+
+    public void start() throws IOException {
+        final ServerSocket serverSocket = new ServerSocket(20444);
+        while(true) {
+            final Socket clientSocket = serverSocket.accept();
+            executor.execute(new MessageLogger(clientSocket));
+        }
+
+    }
+
+}
+
+=========================MessageLogger.java===========================
+
+package HomeTask15;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class MessageLogger implements Runnable {
+    private final SimpleDateFormat timeStampFormat = new SimpleDateFormat("kk:mm:ss");
+
+    private final Socket clientSocket;
+
+    public MessageLogger(final Socket clientSocket) {
+        this.clientSocket = clientSocket;
+    }
+
+    @Override
+    public void run() {
+        log("== Connected ==");
+
+        try (BufferedReader clientInputStream = new BufferedReader(
+                                                    new InputStreamReader(
+                                                            clientSocket.getInputStream()))) {
+
+            while (true) {
+                try {
+                    final String input = clientInputStream.readLine();
+                    if (input == null) {
+                        break;
+                    }
+                    log(input);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    break;
+                }
+            }
+
+        } catch (final IOException e) {
+             //e.printStackTrace();
+
+            log("== Disconnected ==");
+        }
+    }
+
+    private void log(final String text) {
+        final String timeStamp = timeStampFormat.format(new Date());
+        System.out.printf("[%s] %s: %s\n",
+                timeStamp,
+                clientSocket.getInetAddress().getHostAddress(),
+                text);
+    }
+}
