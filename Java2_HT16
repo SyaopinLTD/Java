@@ -1,0 +1,135 @@
+========================Person.java======================
+package HomeTask16;
+
+public class Person {
+private String name;
+private String lastName;
+private int age;
+
+public Person(String name, String lastName, int age){
+	this.name = name;
+	this.lastName = lastName;
+	this.age = age;
+}
+
+@Override
+public String toString() {
+	return "Person [name=" + name + ", lastName=" + lastName + ", age=" + age
+			+ "]\n";
+}
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public String getLastName() {
+	return lastName;
+}
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+public int getAge() {
+	return age;
+}
+
+public void setAge(int age) {
+	this.age = age;
+}
+}
+============================PersonCmp.java====================
+package HomeTask16;
+
+import java.util.Comparator;
+
+public class PersonCmp implements Comparator<Person>{
+
+public int compare(Person a, Person b){
+	if (a.getName().compareTo(b.getName())==0)
+	{
+		if (a.getLastName().compareTo(b.getLastName())==0){
+			return a.getAge() - b.getAge();
+		}
+		return a.getLastName().compareTo(b.getLastName());
+	}
+	
+	return a.getName().compareTo(b.getName());
+}	
+	
+}
+=============MainThread.java================
+package HomeTask16;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+
+public class MainThread {
+	
+	final static int LISTLEN = 10;
+	
+	public static void main(String[] args) {
+		List<Person> lst = new ArrayList<Person>();
+		
+    for(int i =0; i < LISTLEN; i ++){
+     lst.add(new Person(createRandomName(), createRandomName(), new Random().nextInt(100)));
+    }
+     
+     System.out.println("Before sorting: \n"+lst);
+     sort(lst, new PersonCmp());
+     System.out.println("After sorting: \n"+lst);
+     progressBar();
+
+	}
+
+static public String createRandomName(){
+	StringBuilder name = new StringBuilder();
+	Random rn = new Random();
+	for (int i = 0; i < rn.nextInt(10)+5; i ++)
+	{
+		name.append((char)(rn.nextInt(25)+97)); 
+		
+	}
+	
+	return name.toString();
+}
+static public void sort(List<Person> personList, Comparator<Person> compararatorPerson){
+	boolean check = false;
+	Person tmp = new Person("", "", 0);
+for (int i = 0; i < personList.size(); i ++){
+	check = false;
+	for (int j = 0; j < personList.size() - 1; j ++)
+	 {
+		if (compararatorPerson.compare(personList.get(j), personList.get(j+1)) > 0){
+			tmp = personList.get(j);
+			personList.set(j, personList.get(j+1));
+			personList.set(j+1, tmp);
+			check = true;
+		  }
+	 }
+		if (check == false) break;
+   }
+ }
+
+static public void progressBar(){
+	
+	for (int i = 1; i <= 100; i ++){
+		
+		System.out.print("\r"+i+"%");
+		try {
+			Thread.sleep(1000);
+			}
+		catch(Exception e){	
+		}
+	}
+}
+}
+
+
