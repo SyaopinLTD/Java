@@ -1,0 +1,181 @@
+===============Person.java================
+package HomeTask18;
+
+import java.util.Arrays;
+
+public class Person {
+private String name;
+private String lastName;
+private int age;
+private Person[] children;
+
+public Person(String name, String lastName, int age){
+	this.name = name;
+	this.lastName = lastName;
+	this.age = age;
+}
+
+public Person[] getChildren() {
+	return children;
+}
+
+public void setChildren(Person[] children) {
+	this.children = children;
+}
+
+@Override
+public String toString() {
+	return "Person [name=" + name + ", lastName=" + lastName + ", age=" + age
+			+ ", children=" + Arrays.toString(children) + "]";
+}
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public String getLastName() {
+	return lastName;
+}
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+public int getAge() {
+	return age;
+}
+
+public void setAge(int age) {
+	this.age = age;
+}
+}
+==========PersonDeserializator.java=============
+package HomeTask18;
+
+public class PersonDeserializator {
+private final static String NAME_TAG = "<name>";
+private final static String LASTNAME_TAG = "<lastname>";
+private final static String AGE_TAG = "<age>";
+public Person deSerialize(String xml){
+	Person person = new Person("","", 0);
+	StringBuilder str = new StringBuilder(xml);
+	extractFromTags(str, person);
+	if (str.indexOf("<chi", 0) == 0){
+		
+	}
+	System.out.println(person);
+	System.out.println(str);
+
+	
+	return person;
+}
+public void extractFromTags(StringBuilder str, Person person){
+	person.setName(str.substring(str.indexOf(NAME_TAG, 0)+NAME_TAG.length(), str.indexOf("</", 0)));
+	str = str.delete(0, str.indexOf("</", 0)+NAME_TAG.length()+1);
+	person.setLastName(str.substring(LASTNAME_TAG.length(), str.indexOf("</", 0)));
+	str = str.delete(0, str.indexOf("</", 0)+LASTNAME_TAG.length()+1);
+	person.setAge(Integer.parseInt(str.substring(AGE_TAG.length(), str.indexOf("</", 0))));
+	str = str.delete(0, str.indexOf("</", 0)+AGE_TAG.length()+1);
+}
+}
+
+===================PersonSerializator.java===============
+package HomeTask18;
+
+import java.util.Random;
+
+public class PersonSerializator {
+	public String createRandomName() {
+		StringBuilder name = new StringBuilder();
+		Random rn = new Random();
+		for (int i = 0; i < rn.nextInt(10) + 5; i++) {
+			name.append((char) (rn.nextInt(25) + 97));
+		}
+        return name.toString();
+	}
+	public Person generateRandomPerson(){
+		return new Person(createRandomName(), createRandomName(), new Random().nextInt(100));
+	}
+	public Person[] generateListOfPerson(int childrenQuantity){
+		Person [] personList = new Person[childrenQuantity];
+		for (int i = 0; i < childrenQuantity; i ++){
+			personList[i] = generateRandomPerson();
+		}
+		return personList;
+	}
+	public String serializePerson(Person person){
+		StringBuilder result = new StringBuilder();
+		//result.append("<person>\n<name>"+person.getName()+"</name>\n<lastname>"+person.getLastName()+"</lastname>\n<age>"+person.getAge()+"</age>\n</person>\n");
+		if (person.getChildren()!=null){
+			result.append("<person><name>"+person.getName()+"</name><lastname>"+person.getLastName()+"</lastname><age>"+person.getAge()+"</age>");
+			result.append("<children>");
+			for (int i = 0; i < person.getChildren().length; i ++){
+			   result.append("<person><name>"+person.getChildren()[i].getName()+"</name><lastname>"+person.getChildren()[i].getLastName()+"</lastname><age>"+person.getChildren()[i].getAge()+"</age></person>");
+			} 
+			result.append("</children></person>");
+			
+		}
+		else{
+		   result.append("<person><name>"+person.getName()+"</name><lastname>"+person.getLastName()+"</lastname><age>"+person.getAge()+"</age></person>");
+		}
+		return result.toString();
+	}
+}
+
+======Main.java===========
+package HomeTask18;
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	private final static int PERSON_QUANTITY = 3;
+	private final static int CHILDREN_QUANTITY = 2;
+	//private final static String PATH =  "C:/Users/Java_1_(Mon ana Wed)/tmp/personlist.xml";
+	private final static String PATH =  "./src/HomeTask18/personlist.xml";
+	
+	public static void main(String[] args) {
+		PersonSerializator procPerson = new PersonSerializator();
+		String str = "";
+		try{
+           FileWriter fw = new FileWriter(PATH, true);
+           BufferedWriter bw = new BufferedWriter(fw);
+           bw.write("<personlist>");
+           for (int i = 0; i < PERSON_QUANTITY; i ++){
+        	    bw.write(procPerson.serializePerson(procPerson.generateRandomPerson()));
+           }
+           Person personWithChildren = new Person("", "", 0);
+           personWithChildren = procPerson.generateRandomPerson();
+           personWithChildren.setChildren(procPerson.generateListOfPerson(CHILDREN_QUANTITY));
+           bw.write(procPerson.serializePerson(personWithChildren));
+           bw.write("</personlist>");
+           bw.close();
+		}
+		catch(Exception e) {
+			System.out.println("Cannot create file, Error with msg: "+e.getMessage());
+		}
+		
+		try{
+			FileReader fr = new FileReader(PATH);
+			BufferedReader br = new BufferedReader(fr);
+			str = br.readLine();
+			PersonDeserializator xmlToPerson = new PersonDeserializator();
+//            String [] tmp = str.split("<person><name>");
+//            for (int i = 0; i < tmp.length; i ++){
+//            	System.out.println(tmp[i]);
+//            	if (i != 0) System.out.println(new Main().readValueBetweenTags(tmp[i]));
+//            }
+			xmlToPerson.deSerialize(str);
+		}
+		catch(Exception e){
+			System.out.println("Cannot read from file, Error with msg: "+e.getMessage());
+		}
+		
+
+	}
+}
