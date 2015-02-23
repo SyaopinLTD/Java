@@ -152,8 +152,23 @@ public class PersonSerializator {
 		}
 		return result.toString();
 	}
+	public String serializePersonWithUpperCase(Person person){
+		StringBuilder result = new StringBuilder();
+		if (person.getChildren()!=null){
+			result.append("<person><name>"+person.getName().toUpperCase()+"</name><lastname>"+person.getLastName()+"</lastname><age>"+person.getAge()+"</age>");
+			result.append("<children>");
+			for (int i = 0; i < person.getChildren().size(); i ++){
+			   result.append("<person><name>"+person.getChildren().get(i).getName().toUpperCase()+"</name><lastname>"+person.getChildren().get(i).getLastName()+"</lastname><age>"+person.getChildren().get(i).getAge()+"</age></person>");
+			} 
+			result.append("</children></person>");
+			
+		}
+		else{
+		   result.append("<person><name>"+person.getName().toUpperCase()+"</name><lastname>"+person.getLastName()+"</lastname><age>"+person.getAge()+"</age></person>");
+		}
+		return result.toString();
+	}
 }
-
 ======Main.java===========
 package HomeTask18;
 
@@ -166,6 +181,7 @@ public class Main {
 	private final static int CHILDREN_QUANTITY = 2;
 	//private final static String PATH =  "C:/Users/Java_1_(Mon ana Wed)/tmp/personlist.xml";
       private final static String PATH =  "./src/HomeTask18/personlist.xml";
+      private final static String PATH_UC =  "./src/HomeTask18/personlistUpperCase.xml";
 
 	public static void main(String[] args) {
 		PersonSerializator procPerson = new PersonSerializator();
@@ -177,7 +193,7 @@ public class Main {
            for (int i = 0; i < PERSON_QUANTITY; i ++){
         	    bw.write(procPerson.serializePerson(procPerson.generateRandomPerson()));
            }
-           Person personWithChildren = new Person("", "", 0);
+           Person personWithChildren = new Person("", "", 0);   //create one person with 2 children
            personWithChildren = procPerson.generateRandomPerson();
            personWithChildren.setChildren(procPerson.generateListOfChildren(CHILDREN_QUANTITY));
            bw.write(procPerson.serializePerson(personWithChildren));
@@ -194,14 +210,19 @@ public class Main {
 			FileReader fr = new FileReader(PATH);
 			BufferedReader br = new BufferedReader(fr);
 			xmlToPerson.setStringFromXML(br.readLine()); 
-			//while(xmlToPerson.getStringFromXML().indexOf("</personlist>", 0)!=0){
-			for (int i = 0; i < 4; i++){
-			    //System.out.println(xmlToPerson.getStringFromXML());
+			while(xmlToPerson.getStringFromXML().indexOf("</personlist>", 0)!=0){
 			    listOfPersonsfromXML.add(xmlToPerson.deSerialize(xmlToPerson.getStringFromXML()));
-			   System.out.println(xmlToPerson.getStringFromXML());
 			}
-			//}
 
+			System.out.println(listOfPersonsfromXML);
+	        FileWriter fw = new FileWriter(PATH_UC, true);
+	        BufferedWriter bw = new BufferedWriter(fw);
+	        bw.write("<personlist>");
+			for (int i = 0; i < listOfPersonsfromXML.size(); i ++){
+				bw.write(procPerson.serializePersonWithUpperCase(listOfPersonsfromXML.get(i)));
+			}
+	        bw.write("</personlist>");
+	        bw.close();
 			br.close();
 		}
 		catch(Exception e){
