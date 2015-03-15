@@ -1,0 +1,191 @@
+==============DBConnect.java================
+package HomeTask21;
+
+import java.sql.Connection;
+
+public class DBConnect {
+Connection dbC;
+public DBConnect(){
+	
+}
+public Connection getDbC() {
+	return dbC;
+}
+public void setDbC(Connection dbC) {
+	this.dbC = dbC;
+}
+}
+
+=========Main.java=================
+package HomeTask21;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.*;
+
+public class Main {
+	private final static String IPADDR =  "jdbc:postgresql://192.168.1.181:5432/postgres";
+	public static void main(String[] args) {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				try{
+				createAndShowGUI();
+				}
+				catch (Exception e){
+					
+				System.out.println(e.getMessage());	
+					
+				}
+			}
+		});
+  }
+public static void createAndShowGUI() throws IOException{
+	final JFrame frame = new JFrame();
+	final JTextArea dbLog = new JTextArea();
+	dbLog.setEditable(false);
+	GridBagConstraints c = new GridBagConstraints();
+	JPanel mainPanel = new JPanel(new GridBagLayout());
+	JButton connectDB = new JButton("Connect");
+	JButton showTBL = new JButton("Show table");
+	JButton add = new JButton("Add record");
+	JButton remove = new JButton("Remove record");
+	c.gridx = 0;
+	c.gridy = 0;
+	c.gridwidth = 3;
+	c.gridheight = 4;
+	c.weightx = 1;
+	c.weighty = 1;
+	c.fill = GridBagConstraints.BOTH;
+	mainPanel.add(dbLog, c);
+	c.gridx = 3;
+	c.gridy = 0;
+	c.gridwidth = 1;
+	c.gridheight = 1;
+	c.weightx = 0.2;
+	c.weighty = 0.3;
+	c.fill = GridBagConstraints.BOTH;
+	mainPanel.add(connectDB, c);
+	c.gridx = 3;
+	c.gridy = 1;
+	c.gridwidth = 1;
+	c.gridheight = 1;
+	c.weightx = 0.2;
+	c.weighty = 0.3;
+	c.fill = GridBagConstraints.BOTH;
+	mainPanel.add(showTBL, c);
+	c.gridx = 3;
+	c.gridy = 2;
+	c.gridwidth = 1;
+	c.gridheight = 1;
+	c.weightx = 0.2;
+	c.weighty = 0.3;
+	c.fill = GridBagConstraints.BOTH;
+	mainPanel.add(add, c);
+	c.gridx = 3;
+	c.gridy = 3;
+	c.gridwidth = 1;
+	c.gridheight = 1;
+	c.weightx = 0.2;
+	c.weighty = 0.3;
+	c.fill = GridBagConstraints.BOTH;
+	mainPanel.add(remove, c);
+	DBConnect connectionToDB = new DBConnect();
+	connectDB.addActionListener(new ActionListener(){	
+		public void actionPerformed(ActionEvent arg0) {
+			try{
+				connectionToDB.setDbC(createConnection(IPADDR));
+				dbLog.setText("Connected");
+				connectDB.setEnabled(false);
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}		
+		}
+		
+	});
+	/////////////////////
+	showTBL.addActionListener(new ActionListener(){	
+		public void actionPerformed(ActionEvent arg0) {
+			try{
+				
+				dbLog.setText(showTable(connectionToDB.getDbC()));
+
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}		
+		}
+		
+	});
+	//////////////////////
+	remove.addActionListener(new ActionListener(){	
+		public void actionPerformed(ActionEvent arg0) {
+			String serialNumber = JOptionPane.showInputDialog(frame, "Input serial number");
+			try{
+			delRecord(connectionToDB.getDbC(), serialNumber);}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		}
+		
+	});
+	/////////////////////
+	add.addActionListener(new ActionListener(){	
+		public void actionPerformed(ActionEvent arg0) {
+			String serialNumber = JOptionPane.showInputDialog(frame, "Input serial number");
+			String model = JOptionPane.showInputDialog(frame, "Input model");
+			String color = JOptionPane.showInputDialog(frame, "color");
+			try{
+			addRecord(connectionToDB.getDbC(), serialNumber, model, color);}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		}
+		
+	});
+	frame.getContentPane().add(mainPanel);
+	frame.pack();
+	frame.setSize(800, 400);
+	frame.setVisible(true);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   }
+public static Connection createConnection(String ipAddress) throws Exception{
+	Connection connection = DriverManager.getConnection(ipAddress, "postgres", "123");
+	return connection;
+ }
+public static String showTable(Connection con) throws Exception{
+	Statement statement = con.createStatement();
+	String sql = "SELECT * from available_cars";
+	ResultSet resultSet = statement.executeQuery(sql);
+	StringBuilder res = new StringBuilder();
+	while(resultSet.next()){
+		String serialNumber = resultSet.getString("serial_number");
+		String model = resultSet.getString("model");
+		String color = resultSet.getString("color");
+		res.append(String.format("%-5s",serialNumber)+String.format("%-20s",model)+String.format("%-5s %n",color));
+
+	}
+	return res.toString();
+}
+public static void addRecord(Connection con, String serial, String model, String color) throws Exception{
+	Statement statement = con.createStatement();
+	StringBuilder sql = new StringBuilder("INSERT INTO available_cars VALUES(");
+	sql.append(serial+",'"+model+"',"+color+")");
+	ResultSet resultSet = statement.executeQuery(sql.toString());
+}
+public static void delRecord(Connection con, String serial) throws Exception{
+	Statement statement = con.createStatement();
+	StringBuilder sql = new StringBuilder("DELETE FROM available_cars WHERE serial_number=");
+	sql.append(serial);
+	ResultSet resultSet = statement.executeQuery(sql.toString());
+}
+}
