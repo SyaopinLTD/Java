@@ -1,0 +1,13 @@
+=============================Database===================
+-- Executing query:
+CREATE TABLE users (
+login varchar(10) PRIMARY KEY,
+password varchar(32)
+);
+Query returned successfully with no result in 111 ms.
+
+-- Executing query:
+INSERT INTO users (login, password) VALUES ('alex', '3b712de48137572f3849aabd5666a4e3'), ('anna', 'e0f7a4d0ef9b84b83b693bbf3feb8e6e')
+Query returned successfully: 2 rows affected, 14 ms execution time.
+
+=======================================================
