@@ -10,4 +10,528 @@ Query returned successfully with no result in 111 ms.
 INSERT INTO users (login, password) VALUES ('alex', '3b712de48137572f3849aabd5666a4e3'), ('anna', 'e0f7a4d0ef9b84b83b693bbf3feb8e6e')
 Query returned successfully: 2 rows affected, 14 ms execution time.
 
-=======================================================
+=========================LoggingChatServer.java==============================
+package HomeTask23;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class LoggingChatServer {
+
+    final ExecutorService executor = Executors.newFixedThreadPool(20);
+    List<Socket> allClients = new ArrayList<Socket>();
+    ArrayList<String> allLogins = new ArrayList<String>();
+
+    public static void main(String[] args) throws IOException, SQLException {
+        new LoggingChatServer().start();
+    }
+
+    public void start() throws IOException, SQLException {
+        final ServerSocket serverSocket = new ServerSocket(20444);
+        Statement statement = connectToDB();
+        while(true) {
+            final Socket clientSocket = serverSocket.accept();
+            allClients.add(clientSocket);
+//            System.out.println(clientSocket);
+//            System.out.println(allClients.size());
+            executor.execute(new MessageLogger(clientSocket, allClients, allLogins, statement, false));
+        }
+
+    }
+    public Statement connectToDB() throws SQLException{
+    	Connection connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "123");
+    	 Statement statement = connection.createStatement();
+		return statement;
+    }
+
+}
+=======================MessageLogger.java======================
+package HomeTask23;
+
+import java.io.*;
+import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+public class MessageLogger implements Runnable {
+    private final SimpleDateFormat timeStampFormat = new SimpleDateFormat("kk:mm:ss");
+
+    private final Socket clientSocket;
+    private List<Socket> allClients;
+    private ArrayList<String> allLogins;
+    private Statement statement;
+    private boolean isLogged;
+
+    public MessageLogger(final Socket clientSocket, List<Socket> allClients, ArrayList<String> allLogins, Statement statement, boolean isLogged) {
+        this.clientSocket = clientSocket;
+        this.allClients = allClients;
+        this.statement = statement;
+        this.isLogged = isLogged;
+        this.allLogins = allLogins;
+    }
+
+    @Override
+    public void run() {
+        log("== Connected ==");
+
+        try (BufferedReader clientInputStream = new BufferedReader(
+                                                    new InputStreamReader(
+                                                            clientSocket.getInputStream()))) {
+
+            while (true) {
+                try {
+                    final String input = clientInputStream.readLine();
+                    if (input == null) {
+                        break;
+                    }
+                    else if (input.startsWith("Login:")){
+                   	
+                        String[] loginInfo = input.split(":");
+                    	System.out.println(loginInfo[1]);
+                    	System.out.println(loginInfo[2]);
+                    	String sql = "SELECT * FROM USERS WHERE LOGIN='"+loginInfo[1]+"' AND PASSWORD='"+loginInfo[2]+"'";
+                    	int resultCount = 0;
+                    	ResultSet resultSet = statement.executeQuery(sql);
+                    	while (resultSet.next()){
+                    		resultCount ++;
+                    	}
+                    	if (resultCount == 0){
+                          PrintWriter clientOutputStream = new PrintWriter (clientSocket.getOutputStream(),true);
+                          System.out.println("login error");
+                          clientOutputStream.println("login error");
+                    	}
+                    	else{
+                    		isLogged = true;
+                    	}
+            	
+                    }
+                if (isLogged){
+                    for(int i = 0; i < allClients.size(); i ++){ 
+                    	String output = input; 
+                    	//System.out.println(allClients.get(i));
+                    	PrintWriter clientOutputStream = new PrintWriter (allClients.get(i).getOutputStream(),true);
+                    	if (input.startsWith("Login:")){
+                    		String[] loginInfo = input.split(":");
+                    		if (!allLogins.contains(loginInfo[1]))
+                    		     {
+                    		     allLogins.add(loginInfo[1]);
+                    		     }
+                    		clientOutputStream.println(loginInfo[1]+" connected to our chat.");
+                    		StringBuilder strB = new StringBuilder();
+                    		for (String s:allLogins){
+                    			strB.append(":"+s);
+                    		}
+                    		clientOutputStream.println("CHAT_LIST_UPDATE"+strB);
+                    		output = loginInfo[1]+" connected to our chat.";
+                    	 }
+                       clientOutputStream.println(output);
+                    }  
+                }
+                   // System.out.println(allLogins);
+                    log(input);
+                    
+
+                    
+                } catch (SQLException e) {
+                  e.printStackTrace();
+//                   PrintWriter clientOutputStream = new PrintWriter (clientSocket.getOutputStream(),true);
+//                   System.out.println(clientSocket);
+//                   clientOutputStream.println("SQL error");
+//                   System.out.println("SQL error");
+                   
+                } catch (IOException e){
+					e.printStackTrace();
+					break;
+				}
+            }
+
+        } catch (final IOException e) {
+             //e.printStackTrace();
+
+            log("== Disconnected ==");
+        }
+    }
+
+    private void log(final String text) {
+        final String timeStamp = timeStampFormat.format(new Date());
+        System.out.printf("[%s] %s: %s\n",
+                timeStamp,
+                clientSocket.getInetAddress().getHostAddress(),
+                text);
+    }
+}
+==============================ChatMain.java===============================
+package HomeTask23;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.swing.*;
+
+public class ChatMain {
+
+	public static void main(String[] args) {
+		new ChatMain().start();
+	}
+
+	private void start() {
+		final Login chatLogin = new Login();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				try {
+					final Socket serverSocket = connectToServer();
+					final BufferedReader serverInputStream = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+					final PrintWriter serverOutputStream = new PrintWriter(serverSocket.getOutputStream(), true);
+					//final JPanel mainPanel = 
+					createAndShowGUI(chatLogin, serverSocket, serverInputStream, serverOutputStream);
+
+				} catch (Exception e) {
+
+					System.out.println(e.getMessage());
+
+				}
+			}
+		});
+	}
+	
+	private JTextArea createChatLog(final JPanel mainPanel, GridBagConstraints c ) {
+		final JTextArea chatLog = new JTextArea();
+		chatLog.setEditable(false);
+		JScrollPane scroll = new JScrollPane(chatLog);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.weightx = 0.7;
+		c.weighty = 0.9;
+		c.fill = GridBagConstraints.BOTH;
+		mainPanel.add(scroll, c);
+		
+		return chatLog;
+	}
+
+	public void createAndShowGUI(final Login chatLogin, 
+								 final Socket serverSocket, 
+								 final BufferedReader serverInputStream, 
+								 final PrintWriter serverOutputStream) {
+		final JFrame frame = new JFrame();
+		final JList<String> chatList = new JList<String>();
+
+		GridBagConstraints c = new GridBagConstraints();
+		
+
+		JPanel mainPanel = new JPanel(new GridBagLayout());
+		final TextField login = new TextField("Login");
+		final TextField pass = new TextField("Pass");
+		JLabel label = new JLabel("Login to chat:");
+		JLabel errorMsg = new JLabel();
+		JButton chatJoin = new JButton("Chat join");
+
+		JPanel loginPanel = new JPanel();
+		loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.PAGE_AXIS));
+
+		label.setMaximumSize(new Dimension(100, 50));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		errorMsg.setMaximumSize(new Dimension(180, 20));
+		errorMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+		login.setMaximumSize(new Dimension(80, 20));
+		pass.setMaximumSize(new Dimension(80, 20));
+		chatJoin.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		loginPanel.add(label);
+		loginPanel.add(errorMsg);
+		loginPanel.add(login);
+		loginPanel.add(pass);
+		loginPanel.add(chatJoin);
+
+		login.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				login.setText("");
+			}
+		});
+		pass.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				pass.setText("");
+				pass.setEchoChar('*');
+			}
+		});
+
+		final JPanel panels = new JPanel(new CardLayout());
+		panels.add(loginPanel);
+		panels.add(mainPanel);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.weightx = 0.7;
+		c.weighty = 0.9;
+		c.fill = GridBagConstraints.BOTH;
+
+
+
+		chatList.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		c.gridx = 1;
+		c.gridy = 0;
+		c.weightx = 0.3;
+		c.weighty = 0.9;
+		c.fill = GridBagConstraints.BOTH;
+		mainPanel.add(chatList, c);
+
+		final TextField message = new TextField("Enter message here..");
+		message.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				message.setText("");
+			}
+		});
+
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 0.7;
+		c.weighty = 0.1;
+		c.fill = GridBagConstraints.BOTH;
+		mainPanel.add(message, c);
+
+		JButton buttonSend = new JButton();
+		buttonSend.setText("Send");
+		c.gridx = 1;
+		c.gridy = 1;
+		c.weightx = 0.3;
+		c.weighty = 0.1;
+		c.fill = GridBagConstraints.BOTH;
+		mainPanel.add(buttonSend, c);
+		final JTextArea chatLog = createChatLog(mainPanel, c);
+
+		chatJoin.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+   				serverOutputStream.println("Login:"+login.getText()+":"+getMD5(pass.getText()));
+
+   				try {
+   				chatLogin.setCheckLogin(waitForLoginConfirm(serverInputStream, errorMsg));
+   				System.out.println(chatLogin.getCheckLogin());
+   				}
+   				catch (IOException e) {
+					e.printStackTrace();
+			    }
+
+  				if (chatLogin.getCheckLogin()){
+  					System.out.println("OK!");
+  	   				chatLogin.setLoginName(login.getText());
+  	   				chatLogin.setPassword(pass.getText());
+//  	   				chatLogin.getLoginList().add(0, login.getText());
+//  	   				String[] names = chatLogin.getLoginList().toArray(
+//  	   						new String[chatLogin.getLoginList().size()]);   
+//  					chatList.setListData(names);
+  					CardLayout cl = (CardLayout) (panels.getLayout());
+  					cl.next(panels);
+  					scheduleMessageUpdates(chatLog, serverInputStream, chatList, chatLogin);
+
+  				}
+			}
+		});
+
+		buttonSend.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				DateFormat dateFormat = new SimpleDateFormat(
+						"yyyy/MM/dd HH:mm:ss");
+				Date date = new Date();
+				
+				serverOutputStream.println(dateFormat.format(date) + " "+ chatLogin.getLoginName() + ": " + message.getText());
+
+				message.setText("");
+			}
+		});
+
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("File");
+		menuBar.add(menu);
+
+		JMenuItem logSave = new JMenuItem("Save chat log");
+
+		JMenuItem exit = new JMenuItem("Chat exit");
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					serverInputStream.close();
+					serverOutputStream.close();
+					serverSocket.close();
+					System.exit(0);
+				} catch (Exception exc) {
+
+					System.out.println(exc.getMessage());
+				}
+
+			}
+		});
+
+		menu.add(logSave);
+		menu.add(exit);
+
+		frame.setJMenuBar(menuBar);
+		frame.setLocationRelativeTo(null);
+
+		frame.getContentPane().add(panels);
+
+		frame.pack();
+		frame.setSize(900, 600);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	}
+
+	private Socket connectToServer() throws UnknownHostException, IOException {
+			InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+			System.out.println("Wellcome to client side");
+			System.out.println("connecting to server...");
+			return new Socket(ipAddress, 20444);
+	}
+
+	private void scheduleMessageUpdates(final JTextArea chatLog, final BufferedReader serverInputStream, final JList<String> chatList, Login chatLogin) {
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+
+		executor.submit(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						final StringBuilder str = new StringBuilder(serverInputStream.readLine());
+						//System.out.println("!!!Check!!!" + str);
+						if (str != null) {
+							if (str.indexOf("CHAT_LIST_UPDATE") != -1){
+								updateChatList(chatList, chatLogin, str.toString());
+							}
+							str.append("\n"+chatLog.getText());
+							SwingUtilities.invokeLater(new Runnable() {
+
+								public void run() {
+									chatLog.setText(str.toString());
+								}
+							});
+						}
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+				}
+			}
+		});
+
+	}
+	public boolean waitForLoginConfirm(final BufferedReader serverInputStream, JLabel errorMsg) throws IOException{
+		if (serverInputStream.readLine().equals("login error")){
+			errorMsg.setForeground(Color.RED);
+			errorMsg.setText("incorrect login/password!");
+			return false; 
+		}
+		else {
+			return true;
+		}
+	}
+	public void updateChatList(final JList<String> chatList, Login chatLogin, String fromServer){
+		String[] connected = fromServer.split(":");
+	    for (int i = 1; i < connected.length; i ++)
+	    {
+			chatLogin.getLoginList().add(0, connected[i]);
+	    }
+				String[] names = chatLogin.getLoginList().toArray(
+						new String[chatLogin.getLoginList().size()]);   
+			chatList.setListData(names);
+	}
+	public String getMD5(String password){
+		MessageDigest md;
+		//String str = "2233";
+        byte[] digest = new byte[0];
+        try {
+        md = MessageDigest.getInstance("md5");
+        md.reset();
+        md.update(password.getBytes());
+        digest = md.digest();
+       // System.out.println("digest: "+digest);
+        }
+        catch(NoSuchAlgorithmException e){
+        	e.printStackTrace();
+        }
+        BigInteger bigInt = new BigInteger(1, digest);
+        //System.out.println("bigint: "+bigInt);
+        String md5hex = bigInt.toString(16);
+        while (md5hex.length()<32){
+        	md5hex = "0" + md5hex;
+        }
+        
+        return md5hex;
+
+	}
+}
+=================================Login.java===================
+package HomeTask23;
+
+import java.util.ArrayList;
+
+public class Login {
+private String loginName;
+private String password;
+private ArrayList<String> loginList;
+private boolean checkLogin;
+public ArrayList<String> getLoginList() {
+	return loginList;
+}
+public Login(){
+	loginList = new ArrayList<String>();
+	loginList.add("Anna");
+	loginList.add("Jack");
+	loginList.add("Bob");
+	checkLogin = false;
+}
+public void setLoginList(ArrayList<String> loginList) {
+
+	this.loginList = loginList;
+}
+public String getLoginName() {
+	return loginName;
+}
+public void setLoginName(String loginName) {
+	this.loginName = loginName;
+}
+public String getPassword() {
+	return password;
+}
+public void setPassword(String password) {
+	this.password = password;
+}
+public void setCheckLogin(boolean checkLogin){
+	this.checkLogin = checkLogin;
+}
+public boolean getCheckLogin(){
+	return checkLogin;
+}
+}
